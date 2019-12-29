@@ -87,42 +87,15 @@ class MyMoviesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MyMovieCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyMovieCell", for: indexPath) as? MyMoviesTableViewCell else { return UITableViewCell()}
         let movie = fetchedResultsController.object(at: indexPath)
-        let label = UILabel()
-        let button = UIButton()
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        cell.contentView.addSubview(stackView)
-        stackView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 5).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -5).isActive = true
-        stackView.heightAnchor.constraint(equalTo: cell.contentView.heightAnchor).isActive = true
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.alignment = .fill
-        stackView.spacing = 5
-        stackView.addArrangedSubview(label)
-        stackView.addArrangedSubview(button)
-    
-        label.text = movie.title
-        label.autoresizesSubviews = true
-
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.black, for: .normal)
-        if movie.hasWatched == true {
-            button.setTitle(WatchStatus.watched.rawValue, for: .normal)
-        } else if movie.hasWatched == false {
-            button.setTitle(WatchStatus.notWatched.rawValue, for: .normal)
-        }
-        button.addTarget(self, action: #selector(updateWatchStatus(button:movie:)), for: .touchUpInside)
-        cell.contentView.addSubview(button)
-       
-        
+        cell.movie = movie
         return cell
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sectionInfo = fetchedResultsController.sections?[section] else { return nil }
+    
         if sectionInfo.name == "0" {
             return "Not Watched"
         } else {
@@ -130,18 +103,10 @@ class MyMoviesTableViewController: UITableViewController {
         }
     }
     
+    
+    
 
-    @objc func updateWatchStatus(button: UIButton, movie: Movies) {
-        let NewMovie = MovieRepresentation(title: movie.title, identifier: movie.identifier, hasWatched: movie.hasWatched)
-          DispatchQueue.main.async {
-            if button.titleLabel?.text == "Not Watched" {
-                button.setTitle(WatchStatus.watched.rawValue, for: .normal)
-                movieController.update(with: movie)
-            } else if button.titleLabel?.text == "Watched" {
-                button.setTitle(WatchStatus.notWatched.rawValue, for: .normal)
-            }
-        }
-    }
+
 }
 
 extension MyMoviesTableViewController: NSFetchedResultsControllerDelegate {

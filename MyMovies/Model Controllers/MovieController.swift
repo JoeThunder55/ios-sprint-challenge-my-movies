@@ -9,6 +9,11 @@
 import Foundation
 import CoreData
 
+enum WatchStatus: String {
+    case watched = "Watched"
+    case notWatched = "Not Watched"
+}
+
 class MovieController {
     let apiController = APIController()
     
@@ -69,6 +74,39 @@ class MovieController {
         }
     }
     
+    func convertToString(status: Bool) -> String {
+        switch status {
+            case true:
+                return WatchStatus.watched.rawValue
+            case false:
+                return WatchStatus.notWatched.rawValue
+        }
+    }
+    
+    func convertToBool(status: String) -> Bool {
+        switch status {
+            case "Watched":
+                return true
+        case "Not Watched":
+                return false
+        case "0":
+            return false
+        case "1":
+            return true
+        default: return false
+        }
+    }
+    
+    func toggleStatus(status: String) -> String {
+        switch status {
+        case "Watched":
+            return "Not Watched"
+        case "Not Watched":
+            return "Watched"
+        default: return "Not Watched"
+        }
+    }
+    
   
         
 
@@ -82,6 +120,7 @@ class MovieController {
                               identifier: UUID().uuidString,
                               title: title)
         try? moc.save()
+        apiController.putMovies(movie: newMovie)
     }
     
     // Saves content to Core Data
@@ -94,8 +133,12 @@ class MovieController {
         }
     }
     
-    func update(movie: Movies) {
-        
+    func update(movie: Movies, with title: String, identifier: String, hasWatched: Bool) {
+        movie.title = title
+        movie.identifier = identifier
+        movie.hasWatched = hasWatched
+        try? CoreDataStack.shared.save()
+        apiController.putMovies(movie: movie)
         
     }
     

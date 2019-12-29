@@ -18,7 +18,7 @@ enum HTTPMethod: String {
 
 class APIController {
     
-    let baseURL = URL(string: "https://movie-d88b6.firebaseio.com/mymovies/V53PSP7l452vDX6kyzYg")!
+    let baseURL = URL(string: "https://movie-d88b6.firebaseio.com/")!
     
     // using init as "viewDidLoad"
     init() {
@@ -46,7 +46,9 @@ class APIController {
                 let movies = Array(try decoder.decode([String : MovieRepresentation].self, from: data).values)
                 try self.updateMovies(with: movies)
             } catch {
-                
+                print("there was an error Decoding:\(error)")
+                completion()
+                return
             }
         }.resume()
     }

@@ -8,20 +8,7 @@
 
 import Foundation
 
-enum WatchStatus: String {
-    case watched = "Watched"
-    case notWatched = "Not Watched"
-    
-    func statusLogic(status: Bool) -> String {
-        switch status {
-            case true:
-                return WatchStatus.watched.rawValue
-            case false:
-                return WatchStatus.notWatched.rawValue
-        }
-        
-    }
-}
+
 
 struct MovieRepresentation: Equatable, Codable {
     let title: String
